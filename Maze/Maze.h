@@ -5,6 +5,7 @@ class Maze {
 public:
 	Maze();
 	~Maze();
+	void StartGame();
 private:
 	void FillMazeWithWalls();
 	static const int WIDTH = 10, HEIGHT = 10;
