@@ -1,38 +1,5 @@
 #include <iostream>
-#include <Windows.h>
-#include <stack>
-#include <numeric>
-using namespace std;
-
-int getKey();
-const char WALL = (char)219;
-const char SPACE = ' ';
-const int SIZE_X = 10;
-const int SIZE_Y = 10;
-
-class Maze {
-private:
-	char map[SIZE_X][SIZE_Y];
-public:
-	void PrintMaze() {
-
-		for (int i = 0; i < SIZE_X; i++) {
-			for (int j = 0; j < SIZE_Y; j++) {
-				COORD mapCoord = { i,j };
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), mapCoord);
-				cout << WALL;
-			}
-		}
-	}
-
-	void GenerateStartingPoint() {
-		srand(NULL);
-
-	}
-};
-
-void main() {
-	Maze maze;
+#include "Maze.h"
 
 	maze.PrintMaze();
 
