@@ -9,6 +9,8 @@ using std::cout;
 using std::endl;
 using std::cin;
 
+int getKey();
+
 class ExampleClass {
 public:
 	void Fun();
@@ -20,6 +22,7 @@ void Fun() {
 
 void main() {
 	Maze maze;
+	maze.Draw();
 	maze.DisplayMaze();
 
 	int key = getKey();

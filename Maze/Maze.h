@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 
 class Maze {
 public:
@@ -6,6 +7,7 @@ public:
 	Maze();
 	~Maze();
 	void StartGame();
+	void DisplayMaze();
 private:
 	void FillGridWithWalls();
 	void Dig();
