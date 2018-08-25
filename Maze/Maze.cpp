@@ -1,66 +1,108 @@
 #include <iostream>
-#include <Windows.h>
 #include <stack>
-#include <numeric>
-using namespace std;
+#include <time.h>
+#include "Windows.h"
+#include "Maze.h"
 
-int getKey();
-const char WALL = (char)219;
-const char SPACE = ' ';
-const int SIZE_X = 10;
-const int SIZE_Y = 10;
+using std::cout;
+using std::endl;
 
-class Maze {
-private:
-	char map[SIZE_X][SIZE_Y];
-public:
-	void PrintMaze() {
+void Maze::Draw() {
+	srand(time(NULL));
+	FillGridWithWalls();
+	GenerateStartPos();
+	Dig();
+}
 
-		for (int i = 0; i < SIZE_X; i++) {
-			for (int j = 0; j < SIZE_Y; j++) {
-				COORD mapCoord = { i,j };
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), mapCoord);
-				cout << WALL;
+void Maze::Dig() {
+	digPos = startPos;
+	bool complete = false;
+	int direction;
+	while (!complete) {
+		bool directionValid = false;
+		while (!AnyValidDirection()) {
+			direction = rand() % 3 + 1;
+			if (ValidDirection(direction)) {
+				digStack.push(digPos);
+				DigDirection(direction);
 			}
 		}
-	}
-
-	void GenerateStartingPoint() {
-		srand(NULL);
 
 	}
-};
+}
 
-void main() {
-	Maze maze;
+void Maze::DigDirection(int direction) {
+	//Up
+	if (direction == 1) {
+		grid[digPos.Y - 1][digPos.X] == ' ';
+		grid[digPos.Y - 2][digPos.X] == ' ';
+		digPos = { digPos.X, digPos.Y - 2 };
+	}//Right
+	else if (direction == 2) {
+		grid[digPos.Y][digPos.X + 1] == ' ';
+		grid[digPos.Y][digPos.X + 2] == ' ';
+		digPos = { digPos.X + 2, digPos.Y };
+	}//Down
+	else if (direction == 3) {
+		grid[digPos.Y + 1][digPos.X] == ' ';
+		grid[digPos.Y + 2][digPos.X] == ' ';
+		digPos = { digPos.X, digPos.Y + 2 };
+	}//Left
+	else if (direction == 4) {
+		grid[digPos.Y][digPos.X - 1] == ' ';
+		grid[digPos.Y][digPos.X - 2] == ' ';
+		digPos = { digPos.X - 2, digPos.Y };
+	}
+}
 
-	maze.PrintMaze();
+bool Maze::AnyValidDirection() {
+	return ValidDirection(1) && ValidDirection(2) && ValidDirection(3) && ValidDirection(4);
+}
 
-	int key = getKey();
-	while (key != VK_ESCAPE) {
-		if (3 == 4) {
-			cout << "nice";
+bool Maze::ValidDirection(int direction) {
+	//Up
+	if (digPos.Y > 2 && direction == 1) { 
+		return grid[digPos.Y - 2][digPos.X] == WALL;
+	}//Down
+	else if (digPos.Y < HEIGHT - 3 && direction == 3) {
+		return grid[digPos.Y + 2][digPos.X] == WALL;
+	}//Right 
+	else if (digPos.X > 2 && direction == 2) {
+		return grid[digPos.Y][digPos.X - 2] == WALL;
+	}//Left
+	else if (digPos.X < WIDTH - 3 && direction == 4) {
+		return grid[digPos.Y][digPos.X + 2] == WALL;
+	}
+}
+
+void Maze::FillGridWithWalls() {
+	for (int row = 0; row < HEIGHT; row++) {
+		for (int column = 0; column < WIDTH; column++) {
+			grid[row][column] = WALL;
+		}
+	}
+}
+
+void Maze::GenerateStartPos() {
+	bool notOdd = false;
+	int xCoord;
+	int yCoord;
+	while (notOdd) {
+		xCoord = rand() % WIDTH;
+		yCoord = rand() % HEIGHT;
+		if (xCoord % 2 == 0 && yCoord % 2 == 0) {
+			notOdd = true;
 		}
 	}
 	
+	grid[xCoord][yCoord] = 'S';
+	startPos = { xCoord, yCoord };
 }
 
-int getKey() {
-	int result = 0;
-	while (result == 0) {
-		short MAX_SHORT = 0x7FFF; //111111111111111
-		if (GetAsyncKeyState(VK_LEFT) & MAX_SHORT) {
-			result = VK_LEFT;
-		}
-		else if (GetAsyncKeyState(VK_UP) & MAX_SHORT) {
-			result = VK_UP;
-		}
-		else if (GetAsyncKeyState(VK_RIGHT) & MAX_SHORT) {
-			result = VK_RIGHT;
-		}
-		else if (GetAsyncKeyState(VK_DOWN) & MAX_SHORT) {
-			result = VK_DOWN;
-		}
-	}
-	return result;
+void Maze::SpawnPlayer() {
+
+}
+
+void Maze::SpawnEnd() {
+
 }
