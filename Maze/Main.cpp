@@ -11,15 +11,6 @@ using std::cin;
 
 int getKey();
 
-class ExampleClass {
-public:
-	void Fun();
-};
-
-void Fun() {
-	cout << "FUN!";
-}
-
 void main() {
 	Maze maze;
 	maze.Draw();

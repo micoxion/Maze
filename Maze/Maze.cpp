@@ -9,7 +9,6 @@ using std::cout;
 using std::endl;
 
 void Maze::Draw() {
-	srand(time(NULL));
 	FillGridWithWalls();
 	GenerateStartPos();
 	Dig();
@@ -20,52 +19,55 @@ void Maze::DisplayMaze() {
 		for (int column = 0; column < WIDTH; column++) {
 			cout << grid[row][column];
 		}
+		cout << row << endl;
 	}
 }
 
 void Maze::Dig() {
 	digPos = startPos;
-	bool complete = false;
+	bool mazeComplete = false;
 	int direction;
-	while (AnyValidDirection()) {
-		direction = rand() % 3 + 1;
-		if (ValidDirection(direction)) {
-			digStack.push(digPos);
-			DigDirection(direction);
+	while (!mazeComplete) {
+		while (AnyValidDirection()) {
+			direction = rand() % 4 + 1;
+			if (ValidDirection(direction)) {
+				digStack.push(digPos);
+				DigDirection(direction);
+			}
 		}
-		DisplayMaze();
+		if (!digStack.empty()) {
+			digStack.pop();
+			if (!digStack.empty())
+				digPos = digStack.top();
+		}
+		else {
+			mazeComplete = true;
+		}
 	}
-
 }
 
 void Maze::DigDirection(int direction) {
-	try {
-		if (direction == 1) {
-			grid[digPos.Y - 1][digPos.X] = ' ';
-			grid[digPos.Y - 2][digPos.X] = ' ';
-			digPos = { digPos.X, digPos.Y - 2 };
-		}//Right
-		else if (direction == 2) {
-			grid[digPos.Y][digPos.X + 1] = ' ';
-			grid[digPos.Y][digPos.X + 2] = ' ';
-			digPos = { digPos.X + 2, digPos.Y };
-		}//Down
-		else if (direction == 3) {
-			grid[digPos.Y + 1][digPos.X] = ' ';
-			grid[digPos.Y + 2][digPos.X] = ' ';
-			digPos = { digPos.X, digPos.Y + 2 };
-		}//Left
-		else if (direction == 4) {
-			grid[digPos.Y][digPos.X - 1] = ' ';
-			grid[digPos.Y][digPos.X - 2] = ' ';
-			digPos = { digPos.X - 2, digPos.Y };
-		}
-	}
-	catch (const std::out_of_range& oor) {
-
-	}
 	//Up
-	
+	if (direction == 1) {
+		grid[digPos.Y - 1][digPos.X] = ' ';
+		grid[digPos.Y - 2][digPos.X] = ' ';
+		digPos = { digPos.X, digPos.Y - 2 };
+	}//Right
+	else if (direction == 2) {
+		grid[digPos.Y][digPos.X + 1] = ' ';
+		grid[digPos.Y][digPos.X + 2] = ' ';
+		digPos = { digPos.X + 2, digPos.Y };
+	}//Down
+	else if (direction == 3) {
+		grid[digPos.Y + 1][digPos.X] = ' ';
+		grid[digPos.Y + 2][digPos.X] = ' ';
+		digPos = { digPos.X, digPos.Y + 2 };
+	}//Left
+	else if (direction == 4) {
+		grid[digPos.Y][digPos.X - 1] = ' ';
+		grid[digPos.Y][digPos.X - 2] = ' ';
+		digPos = { digPos.X - 2, digPos.Y };
+	}
 }
 
 bool Maze::AnyValidDirection() {
@@ -80,11 +82,14 @@ bool Maze::ValidDirection(int direction) {
 	else if (digPos.Y < HEIGHT - 3 && direction == 3) {
 		return grid[digPos.Y + 2][digPos.X] == WALL;
 	}//Right 
-	else if (digPos.X > 2 && direction == 2) {
-		return grid[digPos.Y][digPos.X - 2] == WALL;
-	}//Left
-	else if (digPos.X < WIDTH - 3 && direction == 4) {
+	else if (digPos.X < WIDTH - 3 && direction == 2) {
 		return grid[digPos.Y][digPos.X + 2] == WALL;
+	}//Left
+	else if (digPos.X > 2 && direction == 4) {
+		return grid[digPos.Y][digPos.X - 2] == WALL;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -97,18 +102,19 @@ void Maze::FillGridWithWalls() {
 }
 
 void Maze::GenerateStartPos() {
+	srand(time(NULL));
 	bool notOdd = false;
 	short int xCoord = 3;
 	short int yCoord = 3;
-	while (notOdd) {
+	while (!notOdd) {
 		xCoord = rand() % WIDTH;
 		yCoord = rand() % HEIGHT;
-		if (xCoord % 2 == 0 && yCoord % 2 == 0) {
+		if (xCoord % 2 != 0 && yCoord % 2 != 0) {
 			notOdd = true;
 		}
 	}
 	
-	grid[xCoord][yCoord] = 'S';
+	grid[yCoord][xCoord] = 'S';
 	startPos = { xCoord, yCoord };
 }
 

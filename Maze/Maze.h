@@ -28,7 +28,7 @@ private:
 
 	std::stack<COORD> digStack;
 
-	static const int WIDTH = 10, HEIGHT = 10;
+	static const int WIDTH = 51, HEIGHT = 51;
 	static const char WALL = (char)219;
 	char grid[WIDTH][HEIGHT];
 	
