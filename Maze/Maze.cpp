@@ -8,10 +8,44 @@
 using std::cout;
 using std::endl;
 
+//Calls necessary Maze methods to initialize and Generate maze
 void Maze::Draw() {
 	FillGridWithWalls();
 	GenerateStartPos();
 	Dig();
+	DisplayMaze();
+	SpawnEnd();
+}
+
+void Maze::Start() {
+	//40 is down, up is 38, right is 39, and left is 37
+	DrawPlayer(startPos);
+	int keyPressed;
+	while (!playerWin) {
+		keyPressed = GetKey();
+		//Up
+		if (keyPressed == 38) {
+			
+		}//Right 
+		else if (keyPressed == 39) {
+			
+		}//Down 
+		else if (keyPressed == 40) {
+
+		}//Left
+		else if (keyPressed == 37) {
+
+		}
+	}
+}
+
+void Maze::SpawnEnd() {
+
+}
+
+void Maze::DrawPlayer(COORD playerPos) {
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), playerPos);
+	cout << PLAYER;
 }
 
 void Maze::DisplayMaze() {
@@ -118,18 +152,30 @@ void Maze::GenerateStartPos() {
 	startPos = { xCoord, yCoord };
 }
 
-void Maze::SpawnPlayer() {
-
-}
-
-void Maze::SpawnEnd() {
-
-}
-
 Maze::Maze() {
 
 }
 
 Maze::~Maze() {
 
+}
+
+int Maze::GetKey() {
+	int result = 0;
+	while (result == 0) {
+		short MAX_SHORT = 0x7FFF; //111111111111111
+		if (GetAsyncKeyState(VK_LEFT) & MAX_SHORT) {
+			result = VK_LEFT;
+		}
+		else if (GetAsyncKeyState(VK_UP) & MAX_SHORT) {
+			result = VK_UP;
+		}
+		else if (GetAsyncKeyState(VK_RIGHT) & MAX_SHORT) {
+			result = VK_RIGHT;
+		}
+		else if (GetAsyncKeyState(VK_DOWN) & MAX_SHORT) {
+			result = VK_DOWN;
+		}
+	}
+	return result;
 }

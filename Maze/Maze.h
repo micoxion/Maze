@@ -6,8 +6,8 @@ public:
 	void Draw();
 	Maze();
 	~Maze();
-	void StartGame();
-	void DisplayMaze();
+	void Start();
+	
 private:
 	void FillGridWithWalls();
 	void Dig();
@@ -15,21 +15,25 @@ private:
 	bool ValidDirection(int);
 	bool AnyValidDirection();
 	void GenerateStartPos();
-	void SpawnPlayer();
+	void DisplayMaze();
+	void DrawPlayer(COORD);
 	void SpawnEnd();
-	
+	int GetKey();
 
 	COORD startPos;
 	COORD playerPos;
 	COORD digPos;
 	COORD dndPos;
 
-	bool finished;
+	bool playerWin;
+
+	int(*getKey)();
 
 	std::stack<COORD> digStack;
 
 	static const int WIDTH = 51, HEIGHT = 51;
 	static const char WALL = (char)219;
+	static const char PLAYER = 'P';
 	char grid[WIDTH][HEIGHT];
 	
 };
