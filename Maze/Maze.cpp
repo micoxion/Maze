@@ -6,10 +6,12 @@
 #include "Maze.h"
 
 using std::cout;
+using std::cin;
 using std::endl;
 
 //Calls necessary Maze methods to initialize and Generate maze
 void Maze::Draw() {
+	GetColors();
 	FillGridWithWalls();
 	GenerateStartPos();
 	Dig();
@@ -17,10 +19,11 @@ void Maze::Draw() {
 	SpawnEnd();
 }
 
+//Draws the player and begins the game loop
 void Maze::Start() {
-	//40 is down, up is 38, right is 39, and left is 37
 	DrawPlayer(startPos);
 	int keyPressed;
+
 	while (!playerWin) {
 		keyPressed = GetKey();
 		//Up
@@ -43,12 +46,14 @@ void Maze::SpawnEnd() {
 
 }
 
+//Places player according to COORD parameter
 void Maze::DrawPlayer(COORD playerPos) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), playerPos);
 	cout << PLAYER;
 }
 
 void Maze::DisplayMaze() {
+	SetTextColor(wallColor);
 	for (int row = 0; row < HEIGHT; row++) {
 		for (int column = 0; column < WIDTH; column++) {
 			cout << grid[row][column];
@@ -61,7 +66,9 @@ void Maze::Dig() {
 	digPos = startPos;
 	bool mazeComplete = false;
 	int direction;
+
 	while (!mazeComplete) {
+		//Loop as long as any direction can be dug in
 		while (AnyValidDirection()) {
 			direction = rand() % 4 + 1;
 			if (ValidDirection(direction)) {
@@ -69,6 +76,7 @@ void Maze::Dig() {
 				DigDirection(direction);
 			}
 		}
+
 		if (!digStack.empty()) {
 			digStack.pop();
 			if (!digStack.empty())
@@ -105,7 +113,8 @@ void Maze::DigDirection(int direction) {
 }
 
 bool Maze::AnyValidDirection() {
-	return ValidDirection(1) || ValidDirection(2) || ValidDirection(3) || ValidDirection(4);
+	return ValidDirection(1) || ValidDirection(2) || 
+		ValidDirection(3) || ValidDirection(4);
 }
 
 bool Maze::ValidDirection(int direction) {
@@ -135,6 +144,7 @@ void Maze::FillGridWithWalls() {
 	}
 }
 
+//Randomly generate and place maze start position
 void Maze::GenerateStartPos() {
 	srand(time(NULL));
 	bool notOdd = false;
@@ -178,4 +188,59 @@ int Maze::GetKey() {
 		}
 	}
 	return result;
+}
+
+void Maze::SetTextColor(int color) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, color);
+}
+
+//Get text colors from user
+void Maze::GetColors() {
+	srand(NULL);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	bool randomizeAll = false;
+
+	//looping through select console text attribute values
+	//displaying colors for choice to user
+	for (int k = 10; k < 15; k++)
+	{
+		SetConsoleTextAttribute(hConsole, k);
+		cout << k << " Color Example" << endl;
+	}
+
+	int response;
+	cout << "Please choose a color for the maze (press 0 to randomize, press 1 to randomize all): ";
+	cin >> response;
+
+	if (response == 0)
+		wallColor = rand() % 6 + 10;
+	else if (response == 1)
+		randomizeAll = true;
+	else
+		wallColor = response;
+
+	if (randomizeAll) {
+		wallColor = rand() % 6 + 10;
+		playerColor = rand() % 6 + 10;
+		startEndColor = rand() % 6 + 10;
+	}
+	else {
+		cout << "Please choose a color for your player (press 0 to randomize): ";
+		cin >> response;
+		if (response == 0)
+			playerColor = rand() % 6 + 10;
+		else
+			playerColor = response;
+		cout << endl;
+
+		cout << "Please choose a color for the start and end signs (press 0 to randomize): ";
+		cin >> response;
+		if (response == 0)
+			playerColor = rand() % 6 + 10;
+		else
+			playerColor = response;
+		cout << endl;
+	}
 }

@@ -9,17 +9,27 @@ public:
 	void Start();
 	
 private:
+	//Drawing functions:
 	void FillGridWithWalls();
-	void Dig();
-	void DigDirection(int);
+	void DrawPlayer(COORD);
+	void DisplayMaze();
+	void GenerateStartPos();
+	void SetTextColor(int);
+
+	//Logic functions:
 	bool ValidDirection(int);
 	bool AnyValidDirection();
-	void GenerateStartPos();
-	void DisplayMaze();
-	void DrawPlayer(COORD);
-	void SpawnEnd();
-	int GetKey();
 
+	//Grid editing functions:
+	void Dig();
+	void DigDirection(int);
+	void SpawnEnd();
+	
+	//User input functions
+	int GetKey();
+	void GetColors();
+
+	//Position storing variables
 	COORD startPos;
 	COORD playerPos;
 	COORD digPos;
@@ -27,13 +37,17 @@ private:
 
 	bool playerWin;
 
-	int(*getKey)();
+	//text attribute values for giving text color
+	int wallColor;
+	int playerColor;
+	int startEndColor;
 
 	std::stack<COORD> digStack;
 
+	//static class variables
 	static const int WIDTH = 51, HEIGHT = 51;
 	static const char WALL = (char)219;
 	static const char PLAYER = 'P';
-	char grid[WIDTH][HEIGHT];
 	
+	char grid[WIDTH][HEIGHT];
 };
